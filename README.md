@@ -70,6 +70,35 @@ For facebook login you will need to add the following to your android manifest
         android:value="@string/facebook_app_id" />
 ```
 
+## Usage for LinkedIn
+
+#### Step 1.  Add the JitPack repository to your build file
+
+Register your app on [LinkedIn Developer](https://www.linkedin.com/developers/apps) Account
+
+#### Step 2.  
+To login into some network, you should call KASocialLogin.
+
+```java
+import com.creativemorph.sociallogins.LinkedIn;
+
+        linkedIn = new LinkedIn();
+        linkedIn.init(this);
+	linkedIn.setLinkedInCredentials("apiKey","secretKey","state");
+        linkedIn.setRedirect_URL("url");
+```
+you can find both keys from developer account ans state from your callbackUrl
+Also you should impliments KASocialLogins listener for callback
+
+```java
+LinkedIn.LinkedInResponseListener 
+
+@Override
+    public void onLinkedInResponseListener(JSONObject response, boolean error) {
+        Log.d("Response", String.valueOf(response));
+    }
+
+```
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
