@@ -42,14 +42,7 @@ public class LinkedIn {
     private String REDIRECT_URL;
     private String PROFILE_URL = "https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))";
     private String EMAIL_URL = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
-    private String AUTHORIZATION_URL = "https://www.linkedin.com/uas/oauth2/authorization";
-    private String ACCESS_TOKEN_URL = "https://www.linkedin.com/uas/oauth2/accessToken";
 
-    private String OAUTH_ACCESS_TOKEN_PARAM = "oauth2_access_token";
-    private String SECRET_KEY_PARAM = "client_secret";
-    private String RESPONSE_TYPE_PARAM = "response_type";
-    private String GRANT_TYPE_PARAM = "grant_type";
-    private String GRANT_TYPE = "authorization_code";
     private String RESPONSE_TYPE_VALUE = "code";
     private String CLIENT_ID_PARAM = "client_id";
     private String STATE_PARAM = "state";
@@ -57,7 +50,7 @@ public class LinkedIn {
     private String QUESTION_MARK = "?";
     private String AMPERSAND = "&";
     private String EQUALS = "=";
-    private String STATE = "E3ZYKC1T6H2yP4z";
+    private String STATE = "";
     private String accessToken = "";
 
     private LinkedInResponseListener listener;
@@ -73,9 +66,10 @@ public class LinkedIn {
         listener = (LinkedInResponseListener) context;
     }
 
-    public void setLinkedInCredentials(String apiKey, String secretKey) {
+    public void setLinkedInCredentials(String apiKey, String secretKey, String state) {
         this.mApiKey = apiKey;
         this.mSecretKey = secretKey;
+        this.STATE = state;
     }
 
     public void setRedirect_URL(String redirect_url) {
@@ -302,11 +296,14 @@ public class LinkedIn {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
         listener.onLinkedInResponseListener(jsonObject,true);
     }
 
     private String getAccessTokenUrl(String authorizationToken) {
+        String ACCESS_TOKEN_URL = "https://www.linkedin.com/uas/oauth2/accessToken";
+        String SECRET_KEY_PARAM = "client_secret";
+        String GRANT_TYPE_PARAM = "grant_type";
+        String GRANT_TYPE = "authorization_code";
         return (ACCESS_TOKEN_URL
                 + QUESTION_MARK
                 + GRANT_TYPE_PARAM + EQUALS + GRANT_TYPE
@@ -321,6 +318,8 @@ public class LinkedIn {
     }
 
     private String getAuthorizationUrl() {
+        String AUTHORIZATION_URL = "https://www.linkedin.com/uas/oauth2/authorization";
+        String RESPONSE_TYPE_PARAM = "response_type";
         return (AUTHORIZATION_URL
                 + QUESTION_MARK + RESPONSE_TYPE_PARAM + EQUALS + RESPONSE_TYPE_VALUE
                 + AMPERSAND + CLIENT_ID_PARAM + EQUALS + mApiKey

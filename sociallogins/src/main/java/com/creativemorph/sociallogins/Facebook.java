@@ -51,24 +51,12 @@ public class Facebook {
 
             @Override
             public void onCancel() {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("message", "Facebook request cancel");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                listener.onFacebookResponseListener(jsonObject, true);
+                generateError("Facebook request cancel");
             }
 
             @Override
             public void onError(FacebookException error) {
-                JSONObject jsonObject = new JSONObject();
-                try {
-                    jsonObject.put("message", error.getLocalizedMessage());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                listener.onFacebookResponseListener(jsonObject, true);
+                generateError(error.getLocalizedMessage());
             }
         });
     }
@@ -89,5 +77,17 @@ public class Facebook {
         parameters.putString("fields", "id, first_name, last_name, email, birthday, gender");
         request.setParameters(parameters);
         request.executeAsync();
+    }
+
+    private void generateError(String msg) {
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("message", msg);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        listener.onFacebookResponseListener(jsonObject, false);
     }
 }
