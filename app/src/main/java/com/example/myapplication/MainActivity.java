@@ -7,15 +7,16 @@ import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.creativemorph.sociallogins.Facebook;
+import com.creativemorph.sociallogins.LinkedIn;
 
 import org.json.JSONObject;
 
-public class MainActivity extends AppCompatActivity implements Facebook.FacebookResponseListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements Facebook.FacebookResponseListener, View.OnClickListener, LinkedIn.LinkedInResponseListener {
 
     private Facebook facebook;
-    private Button fbLoginButton;
+    private LinkedIn linkedIn;
+    private Button fbLoginButton, linkedInLoginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +24,8 @@ public class MainActivity extends AppCompatActivity implements Facebook.Facebook
         setContentView(R.layout.activity_main);
         initView();
         facebook = new Facebook(this);
-
+        linkedIn = new LinkedIn();
+        linkedIn.init(this);
     }
 
     @Override
@@ -31,6 +33,13 @@ public class MainActivity extends AppCompatActivity implements Facebook.Facebook
         switch (v.getId()) {
             case R.id.fbLoginButton:
                 facebook.login();
+                break;
+            case R.id.linkedInLoginButton:
+                try {
+                    linkedIn.login();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
         }
     }
@@ -46,8 +55,15 @@ public class MainActivity extends AppCompatActivity implements Facebook.Facebook
         Log.d("Response", String.valueOf(response));
     }
 
+    @Override
+    public void onLinkedInResponseListener(JSONObject response, boolean error) {
+        Log.d("Response", String.valueOf(response));
+    }
+
     private void initView() {
         fbLoginButton = findViewById(R.id.fbLoginButton);
+        linkedInLoginButton = findViewById(R.id.linkedInLoginButton);
         fbLoginButton.setOnClickListener(this);
+        linkedInLoginButton.setOnClickListener(this);
     }
 }
