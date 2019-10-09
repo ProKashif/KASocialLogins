@@ -34,14 +34,14 @@ public class LinkedIn {
     private Context context;
     private Dialog dialog;
 
-    private String mApiKey = "86nehb46hc21ir";
-    private String mSecretKey = "Go47ulm6ifnfxG5D";
+    private String mApiKey;
+    private String mSecretKey;
 
     private String JOIN_LINK = "https://www.linkedin.com/start/join?";
     private String FORGET_LINK = "https://www.linkedin.com/checkpoint/rp/request-password-reset";
-    private String REDIRECT_URL = "http://test.yooney.s3-website-us-east-1.amazonaws.com/linkedin/";
+    private String REDIRECT_URL;
     private String PROFILE_URL = "https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))";
-    private String Email_URL = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
+    private String EMAIL_URL = "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))";
     private String AUTHORIZATION_URL = "https://www.linkedin.com/uas/oauth2/authorization";
     private String ACCESS_TOKEN_URL = "https://www.linkedin.com/uas/oauth2/accessToken";
 
@@ -73,12 +73,13 @@ public class LinkedIn {
         listener = (LinkedInResponseListener) context;
     }
 
-    public void setApiKey(String apiKey) {
-        this.mApiKey = apiKey ;
+    public void setLinkedInCredentials(String apiKey, String secretKey) {
+        this.mApiKey = apiKey;
+        this.mSecretKey = secretKey;
     }
 
-    public void setSecretKey(String secretKey) {
-        this.mSecretKey = secretKey ;
+    public void setRedirect_URL(String redirect_url) {
+        this.REDIRECT_URL = redirect_url ;
     }
 
     public void login() {
@@ -236,7 +237,7 @@ public class LinkedIn {
 
     private void getEmail() {
 
-        StringRequest req = new StringRequest(Request.Method.GET, Email_URL, new Response.Listener<String>() {
+        StringRequest req = new StringRequest(Request.Method.GET, EMAIL_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -297,7 +298,7 @@ public class LinkedIn {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("message", "LinkedIn request cancel");
+            jsonObject.put("message", msg);
         } catch (JSONException e) {
             e.printStackTrace();
         }
