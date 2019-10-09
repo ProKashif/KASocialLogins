@@ -1,5 +1,7 @@
 # KASocialLogins
 
+[![](https://jitpack.io/v/ProKashif/KASocialLogins.svg)](https://jitpack.io/#ProKashif/KASocialLogins)
+
 This is Social login library in which you can login through Facebook And LinkedIn
 
 ## Installation
