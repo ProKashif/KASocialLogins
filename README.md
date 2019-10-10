@@ -119,6 +119,20 @@ To login into Google you should call KASocialLogin.
 
 ```
 
+Also you should redirect you onActivityResult() callback to KASocialLogin
+
+```java
+
+ @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SocialLoginConstant.GOOGLE_REQUEST_CODE) {
+            google.activityResult(requestCode, resultCode, data);
+        } 
+    }
+
+```
+
 ## Usage for LinkedIn
 
 #### Step 1. Register App
