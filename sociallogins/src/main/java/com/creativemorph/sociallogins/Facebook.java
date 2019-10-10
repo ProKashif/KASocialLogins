@@ -21,48 +21,63 @@ import java.util.Arrays;
 public class Facebook {
 
     private CallbackManager callbackManager;
-    private Context context;
+    private Context mContext;
     private FacebookResponseListener listener;
+    private LoginManager loginManager;
 
     public interface FacebookResponseListener {
         void onFacebookResponseListener(JSONObject response, boolean error);
     }
 
     public Facebook(Context context) {
-        this.context = context;
+        this.mContext = context;
         callbackManager = CallbackManager.Factory.create();
         listener = (FacebookResponseListener) context;
+        loginManager = LoginManager.getInstance();
     }
 
     public void login() {
 
-        LoginManager loginManager = LoginManager.getInstance();
+        if (loginManager != null) {
+            //Mark: Set permissions
+            loginManager.logInWithReadPermissions((Activity) mContext,
+                    Arrays.asList("public_profile", "email"));
+            loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(final LoginResult loginResult) {
+                    getFacebookData(loginResult);
+                }
 
-        loginManager.logOut();
+                @Override
+                public void onCancel() {
+                    generateError(mContext.getString(R.string.facebook_request_cancel));
+                }
 
-        //Mark: Set permissions
-        loginManager.logInWithReadPermissions((Activity) context,
-                Arrays.asList("public_profile", "email"));
-        loginManager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(final LoginResult loginResult) {
-                getFacebookData(loginResult);
-            }
+                @Override
+                public void onError(FacebookException error) {
+                    generateError(error.getLocalizedMessage());
+                }
+            });
+        } else {
+            generateError(mContext.getString(R.string.facebook_login_error));
+        }
 
-            @Override
-            public void onCancel() {
-                generateError("Facebook request cancel");
-            }
+    }
 
-            @Override
-            public void onError(FacebookException error) {
-                generateError(error.getLocalizedMessage());
-            }
-        });
+    public void logout() {
+        if (loginManager != null) {
+            loginManager.logOut();
+        } else {
+            generateError(mContext.getString(R.string.facebook_logout_error));
+        }
     }
 
     public void activityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (callbackManager != null) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        } else {
+            generateError(mContext.getString(R.string.general_error));
+        }
     }
 
     private void getFacebookData(final LoginResult loginResult) {
@@ -88,6 +103,6 @@ public class Facebook {
             e.printStackTrace();
         }
 
-        listener.onFacebookResponseListener(jsonObject, false);
+        listener.onFacebookResponseListener(jsonObject, true);
     }
 }

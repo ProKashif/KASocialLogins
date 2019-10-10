@@ -73,7 +73,7 @@ public class LinkedIn {
     }
 
     public void setRedirect_URL(String redirect_url) {
-        this.REDIRECT_URL = redirect_url ;
+        this.REDIRECT_URL = redirect_url;
     }
 
     public void login() {
@@ -107,7 +107,7 @@ public class LinkedIn {
                     String stateToken = uri.getQueryParameter(STATE_PARAM);
                     if (stateToken == null || !stateToken.equals(STATE)) {
 
-                        generateError("Authentication Error");
+                        generateError(context.getString(R.string.auth_error));
 
                         if (dialog != null) {
                             dialog.dismiss();
@@ -118,9 +118,9 @@ public class LinkedIn {
                     if (authorizationToken == null) {
 
                         if (authorizationUrl.contains(CANCEL_LINK)) {
-                            generateError("LinkedIn request cancel");
+                            generateError(context.getString(R.string.linkedin_request_cancel));
                         } else {
-                            generateError("Authentication Error");
+                            generateError(context.getString(R.string.auth_error));
                         }
                         if (dialog != null) {
                             dialog.dismiss();
@@ -128,7 +128,7 @@ public class LinkedIn {
                         return true;
                     }
 
-                    Log.i("Authorize", "Auth token received: "+authorizationToken);
+                    Log.i("Authorize", "Auth token received: " + authorizationToken);
                     String accessTokenUrl = getAccessTokenUrl(authorizationToken);
 
                     postRequest(accessTokenUrl);
@@ -157,7 +157,7 @@ public class LinkedIn {
         dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                generateError("LinkedIn request cancel");
+                generateError(context.getString(R.string.linkedin_request_cancel));
             }
         });
     }
@@ -172,7 +172,7 @@ public class LinkedIn {
                     JSONObject jObject = new JSONObject(response);
                     if (jObject.has("access_token")) {
                         accessToken = jObject.getString("access_token");
-                        Log.i("Authorize", "Access token received: "+accessToken);
+                        Log.i("Authorize", "Access token received: " + accessToken);
                         getUserData(PROFILE_URL);
                     }
                 } catch (Exception e) {
@@ -182,14 +182,14 @@ public class LinkedIn {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                generateError(""+error);
+                generateError("" + error);
             }
         });
         Volley.newRequestQueue(context).add(req);
     }
 
     private void getUserData(String url) {
-        Log.d("resp"," "+url);//object:
+        Log.d("resp", " " + url);//object:
         StringRequest req = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -205,17 +205,17 @@ public class LinkedIn {
                     makeResponse("firstName", firstName);
                     makeResponse("lastName", lastName);
                     makeResponse("profileImage", image);
-                    Log.i("Authorize", "Object received: "+jObject);
+                    Log.i("Authorize", "Object received: " + jObject);
                     getEmail();
                 } catch (Exception e) {
                     e.printStackTrace();
-                    generateError("Server error");
+                    generateError(context.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                generateError(""+error);
+                generateError("" + error);
             }
         }) {
             @Override
@@ -241,14 +241,14 @@ public class LinkedIn {
                     if (elements.has("handle~")) {
                         String email = elements.getJSONObject("handle~").getString("emailAddress");
                         makeResponse("userEmail", email);
-                        listener.onLinkedInResponseListener(responseJson,false);
+                        listener.onLinkedInResponseListener(responseJson, false);
                     }
                     if (dialog != null) {
                         dialog.dismiss();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    generateError("Server error");
+                    generateError(context.getString(R.string.general_error));
                 }
             }
         }, new Response.ErrorListener() {
@@ -278,9 +278,9 @@ public class LinkedIn {
             CookieManager.getInstance().removeAllCookies(null);
             CookieManager.getInstance().flush();
         } else {
-            CookieSyncManager cookieSyncMgr=CookieSyncManager.createInstance(context);
+            CookieSyncManager cookieSyncMgr = CookieSyncManager.createInstance(context);
             cookieSyncMgr.startSync();
-            CookieManager cookieManager=CookieManager.getInstance();
+            CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.removeAllCookie();
             cookieManager.removeSessionCookie();
             cookieSyncMgr.stopSync();
@@ -296,7 +296,7 @@ public class LinkedIn {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        listener.onLinkedInResponseListener(jsonObject,true);
+        listener.onLinkedInResponseListener(jsonObject, true);
     }
 
     private String getAccessTokenUrl(String authorizationToken) {

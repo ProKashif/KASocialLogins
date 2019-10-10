@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">SocialLogin</string>
+    <string name="facebook_logout_error">Facebook logout failed</string>
+    <string name="facebook_request_cancel">Facebook request cancel</string>
+    <string name="facebook_login_error">Facebook login failed</string>
+    <string name="context_error">mContext should be an instanceof Activity.</string>
+    <string name="google_login_success">Google account login successfully</string>
+    <string name="google_logout_success">Google account logout successfully</string>
+    <string name="general_error">Something went wrong</string>
+    <string name="auth_error">Authentication Error</string>
+    <string name="linkedin_request_cancel">LinkedIn request cancel</string>
 </resources>
